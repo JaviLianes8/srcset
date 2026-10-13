@@ -1,27 +1,43 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
 name = "srcset"
-version = "0.1.0"
-description = "Parse and build the HTML srcset attribute with width and pixel-density descriptors"
+version = "0.2.0"
+description = "Parse, build, check and resolve the HTML srcset and sizes attributes like a browser"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Javier Lianes", email = "javier@lianes8studio.com" }]
-keywords = ["srcset", "html", "responsive-images", "parser", "attribute"]
+keywords = [
+    "srcset", "sizes", "html", "responsive-images", "whatwg", "media-queries", "picture",
+    "image", "parser",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "Environment :: Console",
     "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Text Processing :: Markup :: HTML",
     "Typing :: Typed",
 ]
 dependencies = []
 
 [project.optional-dependencies]
 dev = ["ruff", "mypy", "pytest", "build", "twine"]
+
+[project.scripts]
+srcset = "srcset._cli:main"
 
 [project.urls]
 Homepage = "https://lianes8studio.com"
@@ -33,6 +49,9 @@ Funding = "https://buymeacoffee.com/jlianesglrs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/srcset"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["IMPROVEMENTS-round*.md", "tests/upstream/*.html", ".github"]
 
 [tool.ruff]
 line-length = 100

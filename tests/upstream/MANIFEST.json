@@ -1,0 +1,29 @@
+{
+  "wpt-parse-a-srcset-attribute.html": {
+    "title": "web-platform-tests html/semantics/embedded-content/the-img-element/srcset/parse-a-srcset-attribute.html",
+    "url": "https://raw.githubusercontent.com/web-platform-tests/wpt/d80fedd035bb0b03e1226efb30eebec73914d1c0/html/semantics/embedded-content/the-img-element/srcset/parse-a-srcset-attribute.html",
+    "revision": "commit d80fedd035bb0b03e1226efb30eebec73914d1c0",
+    "licence": "BSD-3-Clause, https://github.com/web-platform-tests/wpt/blob/master/LICENSE.md",
+    "fetched": "2026-10-13",
+    "size": 15688,
+    "sha256": "b1dae4f861299a921c7cf7f67101bbd268dedc03281e51db1716bb84511fd6c4"
+  },
+  "wpt-select-an-image-source.html": {
+    "title": "web-platform-tests html/semantics/embedded-content/the-img-element/srcset/select-an-image-source.html",
+    "url": "https://raw.githubusercontent.com/web-platform-tests/wpt/d80fedd035bb0b03e1226efb30eebec73914d1c0/html/semantics/embedded-content/the-img-element/srcset/select-an-image-source.html",
+    "revision": "commit d80fedd035bb0b03e1226efb30eebec73914d1c0",
+    "licence": "BSD-3-Clause, https://github.com/web-platform-tests/wpt/blob/master/LICENSE.md",
+    "fetched": "2026-10-13",
+    "size": 1076,
+    "sha256": "6eeb49da20d88962b0d273e2e64d80413e03ac9fa77b13c284f8e73d7aaf7dbd"
+  },
+  "wpt-sizes-iframed.sub.html": {
+    "title": "web-platform-tests html/semantics/embedded-content/the-img-element/sizes/support/sizes-iframed.sub.html",
+    "url": "https://raw.githubusercontent.com/web-platform-tests/wpt/d80fedd035bb0b03e1226efb30eebec73914d1c0/html/semantics/embedded-content/the-img-element/sizes/support/sizes-iframed.sub.html",
+    "revision": "commit d80fedd035bb0b03e1226efb30eebec73914d1c0",
+    "licence": "BSD-3-Clause, https://github.com/web-platform-tests/wpt/blob/master/LICENSE.md",
+    "fetched": "2026-10-13",
+    "size": 19367,
+    "sha256": "0fc992c38c0848b1f5bc3b0bf120af90786421a968c065b2122bff140b6a6595"
+  }
+}
