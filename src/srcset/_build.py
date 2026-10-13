@@ -43,9 +43,8 @@ def _candidate(item: object) -> Candidate:
 
 
 def _split(descriptor: str) -> list[str]:
-    # A comma or a parenthesis would change how the parser cuts the value.
-    if any(ch in descriptor for ch in ",()"):
-        raise SrcsetError(f"invalid descriptor: {descriptor!r:.80}")
+    # Commas and parentheses never survive the descriptor parser, so splitting on ASCII
+    # whitespace reads the text exactly as the parser's tokenizer would.
     return [token for token in re.split(r"[\t\n\x0c\r ]+", descriptor) if token]
 
 
