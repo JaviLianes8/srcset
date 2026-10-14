@@ -25,8 +25,7 @@ def _numbers(args: list[Quantity]) -> bool:
 
 
 def _round(strategy: str, a: float, b: float) -> float:
-    if b == 0:
-        return math.nan
+    # A zero step divides by zero; apply() turns that into NaN, which is invalid.
     ratio = a / b
     if strategy == "up":
         steps = math.ceil(ratio)
@@ -41,8 +40,6 @@ def _round(strategy: str, a: float, b: float) -> float:
 
 
 def _modulo(a: float, b: float, truncate: bool) -> float:
-    if b == 0:
-        return math.nan
     steps = math.trunc(a / b) if truncate else math.floor(a / b)
     return a - b * steps
 

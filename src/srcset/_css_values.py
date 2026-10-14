@@ -93,7 +93,7 @@ def strip(values: list[Value]) -> list[Value]:
 def ident(value: Value, *names: str) -> str | None:
     """The lower-cased name of an identifier, if it is one (and one of ``names``)."""
     if isinstance(value, Token) and value.kind == "ident":
-        name = value.value.lower() if value.value.isascii() else _ascii_lower(value.value)
+        name = _ascii_lower(value.value)
         return name if not names or name in names else None
     return None
 

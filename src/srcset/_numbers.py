@@ -45,13 +45,13 @@ def is_floating_point(text: str) -> bool:
 def parse_floating_point(text: str) -> float | None:
     """Value of a valid floating-point number; ``None`` when it rounds past the doubles.
 
-    Python rounds to the nearest double with ties to even, as the HTML rules do, and the
-    rules have no negative zero.
+    Python rounds to the nearest double with ties to even, as the HTML rules do. The
+    rules have no negative zero; ``Candidate`` turns ``-0.0`` into ``0.0``.
     """
     value = float(text)
     if math.isinf(value):
         return None
-    return value + 0.0
+    return value
 
 
 def format_density(density: float) -> str:

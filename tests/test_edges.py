@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 
 import pytest
 
@@ -54,3 +55,36 @@ def test_cli_writes_widths_as_numbers_below_the_cutoff(capsys: pytest.CaptureFix
     rows = json.loads(capsys.readouterr().out)
     assert rows[0]["width"] == below
     assert rows[1]["width"] == "1" + "0" * 400
+
+
+@pytest.mark.parametrize(
+    ("value", "px"),
+    [
+        ("min(nearest, 1px), 7px", 7.0),
+        ("calc(0), 7px", 7.0),
+        ("calc(sqrt(4px) * 1px), 7px", 7.0),
+        ("round(1px, 0px), 7px", 7.0),
+        ("mod(7.5px, 1px)", 0.5),
+        ("calc(sign(0.5px) * 1px)", 1.0),
+        ("calc((sign(0px) + 1) * 1px)", 1.0),
+        ("calc(exp(1px) * 1px), 7px", 7.0),
+        ("(" * 40 + ")" * 40 + " 5px, 9px", 9.0),
+        ("calc(" + "(" * 31 + "3px" + ")" * 31 + ")", 3.0),
+        ("calc(" + "(" * 32 + "3px" + ")" * 32 + "), 7px", 7.0),
+    ],
+)
+def test_math_and_nesting_limits(value: str, px: float) -> None:
+    assert parse_sizes(value, ENV) == pytest.approx(px)
+
+
+def test_viewport_units_need_the_height_they_use() -> None:
+    assert parse_sizes("10vmin, 7px", Environment(500)) == 7.0
+    assert parse_sizes("10vw", Environment(500)) == 50.0
+
+
+def test_negative_zero_never_escapes() -> None:
+    assert math.copysign(1.0, parse_sizes("-0px", ENV)) == 1.0
+    env = Environment(-0.0, -0.0)
+    assert math.copysign(1.0, env.width) == 1.0
+    with pytest.raises(AttributeError):
+        env.width = 3.0  # type: ignore[misc]
