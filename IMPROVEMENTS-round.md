@@ -11,8 +11,8 @@ Progress:
 - [x] Command line
 - [x] Contracts: WPT corpus (local), cited vectors, README examples run, typing
 - [x] Docs and packaging: README, CHANGELOG, metadata, installed-wheel e2e test
-- [ ] Gates: ruff format, ruff check, mypy --strict, pytest
-- [ ] Mutation run: removing guarded logic makes the suite fail
+- [x] Gates: ruff format, ruff check, mypy --strict, pytest
+- [x] Mutation run: removing guarded logic makes the suite fail
 - [x] Independent review findings fixed with regression tests
 - [ ] Pull request opened, guard clean
 
@@ -90,3 +90,54 @@ Compared with the current standard:
   the real values depend on the font.
 - Trigonometric math functions: they need angle types, which never yield a length here.
 - URL resolution against a base URL: candidates keep the attribute's text.
+
+## Verification
+
+- Gates on CPython 3.14 (a clean clone): `ruff format --check .`, `ruff check .`,
+  `mypy --strict src` (and `src tests`) and `pytest`, all exit 0. With `SRCSET_E2E=1` the
+  installed-wheel test builds the wheel and sdist, checks their contents (no fetched files,
+  no planning notes, the console script entry point), installs the wheel in a fresh venv and
+  drives the API, the `srcset` command and `python -m srcset` from an empty folder.
+- Ground truth: every web-platform-tests case passes. 236 `<img>` cases from
+  `parse-a-srcset-attribute.html` and `select-an-image-source.html` give the image a
+  browser shows, and 179 sizes cases from `sizes-iframed.sub.html` pick the same image as
+  their reference, with the references themselves checked (small image for the `1px`
+  paragraph, large one for the `100vw` paragraphs). Without the fetched files they skip.
+- Mutation runs (AST mutations of comparisons, boolean operators, arithmetic, constants,
+  `if` tests, `raise`, `continue` and `return`; no bytecode, `__pycache__` purged, a
+  timeout per mutant, baseline green before and after). The last run made 1659 mutants;
+  64 survived and were read one by one. Two were killed by new grammar tests. The rest
+  are equivalent: type guards whose absence still raises `TypeError` a step later,
+  `zip(strict=...)` on lists that always match, position bumps at end of input, bounds
+  that no input can reach (surrogates are replaced before tokenizing, tabs and spaces never
+  reach the url non-printable check), the digit chunk size, and branches whose fallback
+  gives the same unknown result. Earlier runs led to the boundary tests in
+  `test_media.py`, `test_css_boundaries.py` and `test_edges.py`, and to removing two dead
+  guards.
+
+## Review fixes
+
+An independent review attacked the branch. Each finding below is fixed and has a test in
+`tests/test_review_regressions.py` that fails on the code before the fix:
+
+- Widths and heights longer than the interpreter's digit limit raised `ValueError`; they
+  now parse and serialize exactly (chunked conversion).
+- Nesting 500 blocks deep raised `RecursionError`; blocks deeper than 32 are skipped and
+  make their entry invalid.
+- Huge widths overflowed in `select`, `validate` and `Candidate(density=10**400)`; they give
+  an infinite density, a readable message and `SrcsetError`.
+- `auto` was resolved anywhere in the list; it now needs the value to be `auto` or start
+  with `auto,`, the "allows auto-sizes" rule, and `validate` checks the same.
+- `validate` missed a comma after the last candidate.
+- Only `calc`, `min`, `max` and `clamp` were accepted; `abs`, `sign`, `round`, `mod`,
+  `rem`, `hypot`, `sqrt`, `pow`, `exp`, `log`, `e` and `pi` work now.
+- Negative resolutions were unknown instead of false in the negative range; `infinite` is
+  accepted.
+- The command line crashed on a legacy console code page; output now escapes what the
+  console cannot encode, and JSON is ASCII.
+- `validate` accepted `<general-enclosed>` and `min-`/`max-` prefixes outside the plain
+  form.
+- Ident code points follow the current CSS Syntax ranges.
+- A test that accepted two outcomes now pins one; `hatchling>=1.27` is required.
+- Not changed: an infinite or NaN math result keeps the entry invalid, because the
+  web-platform-tests sizes cases expect `calc(1px / 0)` to fall back like an invalid entry.

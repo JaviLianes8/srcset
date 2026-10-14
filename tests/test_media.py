@@ -15,6 +15,8 @@ WIDE = Environment(width=1000, height=800, density=2)
     [
         ("()", False),
         ("not (width) and (height)", False),
+        ("not (min-width: 2000px) and (width)", False),
+        ("(width) and", False),
         ("(width) (height)", False),
         ("(width) and (height) and (min-width: 2000px)", False),
         ("(width) and (height) and (width)", True),
